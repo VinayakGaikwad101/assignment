@@ -12,6 +12,7 @@ import {
   User,
   Edit3,
   X,
+  Zap,
 } from "lucide-react";
 
 const CaseDetails: React.FC = () => {
@@ -55,6 +56,27 @@ const CaseDetails: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
+  const handleQuickStageUpdate = async (newStage: string) => {
+    const GQL_MUTATION = `
+      mutation UpdateStage($id: ID!, $stage: String!) {
+        updateCaseStage(id: $id, stage: $stage) { id stage }
+      }
+    `;
+    try {
+      await fetch("http://localhost:5000/graphql", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: GQL_MUTATION,
+          variables: { id, stage: newStage },
+        }),
+      });
+      fetchData(true);
+    } catch (err) {
+      alert("GraphQL Update Failed");
+    }
+  };
+
   const handleTaskSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -95,41 +117,62 @@ const CaseDetails: React.FC = () => {
   };
 
   if (loading)
-    return <div className="p-10 text-center font-black">LOADING...</div>;
+    return (
+      <div className="p-10 text-center font-black text-black">LOADING...</div>
+    );
   if (!caseData)
-    return <div className="p-10 text-center font-black">NOT FOUND</div>;
+    return (
+      <div className="p-10 text-center font-black text-black">NOT FOUND</div>
+    );
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <button
         onClick={() => navigate("/cases")}
-        className="flex items-center gap-2 text-gray-500 hover:text-black font-black mb-6 uppercase text-xs tracking-widest transition-colors"
+        className="flex items-center gap-2 text-gray-400 hover:text-black font-black mb-6 uppercase text-xs tracking-widest transition-colors"
       >
         <ArrowLeft size={16} /> Back to cases
       </button>
 
-      <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm mb-8 flex justify-between items-center">
+      <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm mb-8 flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-black text-black leading-tight">
+          <h1 className="text-4xl font-black text-black leading-tight tracking-tighter">
             {caseData.caseTitle}
           </h1>
-          <p className="text-gray-400 font-bold uppercase text-[10px] mt-1 tracking-[0.2em]">
+          <p className="text-gray-400 font-bold uppercase text-[10px] mt-2 tracking-[0.2em]">
             {caseData.caseType} // {caseData.courtName}
           </p>
+
+          <div className="flex gap-2 mt-6">
+            {["Filing", "Evidence", "Arguments", "Order Reserved"].map((s) => (
+              <button
+                key={s}
+                onClick={() => handleQuickStageUpdate(s)}
+                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${caseData.stage === s ? "bg-black text-white shadow-lg" : "bg-gray-50 text-gray-400 hover:bg-gray-100"}`}
+              >
+                {s}
+              </button>
+            ))}
+            <div className="flex items-center gap-1 ml-2 text-blue-600 animate-pulse">
+              <Zap size={12} fill="currentColor" />{" "}
+              <span className="text-[8px] font-black uppercase">GQL LIVE</span>
+            </div>
+          </div>
         </div>
         <div className="text-right">
-          <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black text-white uppercase tracking-wider">
+          <span className="px-4 py-2 rounded-xl text-[10px] font-black bg-blue-50 text-blue-600 uppercase tracking-widest border border-blue-100">
             {caseData.stage}
           </span>
-          <p className="text-lg font-black mt-2 text-black">
+          <p className="text-xl font-black mt-4 text-black">
             {new Date(caseData.nextHearingDate).toLocaleDateString()}
           </p>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-black uppercase tracking-tight text-black">
-          Preparation Tracker
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl font-black uppercase tracking-tighter text-black flex items-center gap-3">
+          <CheckCircle size={24} className="text-gray-300" /> Preparation
+          Tracker
         </h2>
         <button
           onClick={() => {
@@ -142,9 +185,9 @@ const CaseDetails: React.FC = () => {
             });
             setShowTaskForm(true);
           }}
-          className="bg-black text-white px-5 py-2.5 rounded-xl font-black flex items-center gap-2 text-xs shadow-lg active:scale-95 transition-all"
+          className="bg-black text-white px-6 py-3 rounded-2xl font-black flex items-center gap-2 text-xs shadow-xl active:scale-95 transition-all"
         >
-          <Plus size={16} /> ADD TASK
+          <Plus size={18} /> NEW TASK
         </button>
       </div>
 
@@ -152,14 +195,14 @@ const CaseDetails: React.FC = () => {
         {tasks.map((task) => (
           <div
             key={task._id}
-            className={`flex items-center justify-between p-6 bg-white border-2 rounded-2xl transition-all ${task.status === "Completed" ? "border-green-500 bg-green-50/20" : "border-gray-100 shadow-sm"}`}
+            className={`flex items-center justify-between p-6 bg-white border-2 rounded-3xl transition-all ${task.status === "Completed" ? "border-green-500 bg-green-50/20" : "border-gray-100 shadow-sm"}`}
           >
             <div className="flex items-center gap-6">
               <button
                 onClick={() => handleToggleStatus(task._id)}
-                className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center transition-all shadow-sm ${task.status === "Completed" ? "bg-green-600 border-green-600 text-white" : "bg-white border-gray-200 text-transparent hover:border-black"}`}
+                className={`w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition-all shadow-sm ${task.status === "Completed" ? "bg-green-600 border-green-600 text-white" : "bg-white border-gray-200 text-transparent hover:border-black"}`}
               >
-                <CheckCircle size={24} strokeWidth={3} />
+                <CheckCircle size={28} strokeWidth={3} />
               </button>
               <div>
                 <h4
@@ -195,24 +238,24 @@ const CaseDetails: React.FC = () => {
                   });
                   setShowTaskForm(true);
                 }}
-                className="p-3 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                className="p-4 bg-gray-50 text-gray-400 rounded-2xl hover:bg-black hover:text-white transition-all"
               >
-                <Edit3 size={18} />
+                <Edit3 size={20} />
               </button>
               {isAdmin && (
                 <button
                   onClick={() => setDeleteTaskId(task._id)}
-                  className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                  className="p-4 bg-red-50 text-red-600 rounded-2xl hover:bg-red-600 hover:text-white transition-all"
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={20} />
                 </button>
               )}
             </div>
           </div>
         ))}
         {tasks.length === 0 && (
-          <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 text-gray-300 font-black uppercase tracking-widest">
-            No tasks yet
+          <div className="text-center py-24 bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200 text-gray-300 font-black uppercase tracking-[0.3em]">
+            No Tasks Active
           </div>
         )}
       </div>
@@ -221,24 +264,24 @@ const CaseDetails: React.FC = () => {
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-md">
           <form
             onSubmit={handleTaskSubmit}
-            className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl space-y-5 relative"
+            className="bg-white rounded-[40px] p-10 max-w-md w-full shadow-2xl space-y-6 relative border border-gray-100"
           >
             <button
               type="button"
               onClick={() => setShowTaskForm(false)}
-              className="absolute right-6 top-6 text-gray-300 hover:text-black"
+              className="absolute right-8 top-8 text-gray-300 hover:text-black transition-colors"
             >
-              <X size={24} />
+              <X size={28} />
             </button>
-            <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 text-black">
-              {editingTask ? "Edit Task" : "New Task"}
+            <h3 className="text-3xl font-black uppercase tracking-tighter text-black">
+              {editingTask ? "Update" : "Create"} Task
             </h3>
             <div className="space-y-4">
               <input
                 type="text"
                 required
                 placeholder="Task Description"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-black focus:border-black outline-none transition-colors"
+                className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl font-bold text-black focus:ring-2 focus:ring-black outline-none"
                 value={taskFormData.title}
                 onChange={(e) =>
                   setTaskFormData({ ...taskFormData, title: e.target.value })
@@ -248,7 +291,7 @@ const CaseDetails: React.FC = () => {
                 type="date"
                 required
                 min={new Date().toISOString().split("T")[0]}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-black focus:border-black outline-none transition-colors"
+                className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl font-bold text-black focus:ring-2 focus:ring-black outline-none"
                 value={taskFormData.dueDate}
                 onChange={(e) =>
                   setTaskFormData({ ...taskFormData, dueDate: e.target.value })
@@ -257,8 +300,8 @@ const CaseDetails: React.FC = () => {
               <input
                 type="text"
                 required
-                placeholder="Assignee (Owner)"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-black focus:border-black outline-none transition-colors"
+                placeholder="Assignee Name"
+                className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl font-bold text-black focus:ring-2 focus:ring-black outline-none"
                 value={taskFormData.ownerName}
                 onChange={(e) =>
                   setTaskFormData({
@@ -268,7 +311,7 @@ const CaseDetails: React.FC = () => {
                 }
               />
               <select
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-black focus:border-black outline-none transition-colors"
+                className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl font-bold text-black focus:ring-2 focus:ring-black outline-none appearance-none"
                 value={taskFormData.priority}
                 onChange={(e) =>
                   setTaskFormData({
@@ -284,37 +327,36 @@ const CaseDetails: React.FC = () => {
             </div>
             <button
               type="submit"
-              className="w-full py-4 bg-black text-white rounded-2xl font-black uppercase text-sm tracking-widest shadow-xl hover:bg-gray-800 transition-all mt-4"
+              className="w-full py-5 bg-black text-white rounded-3xl font-black uppercase text-sm tracking-widest shadow-2xl hover:bg-gray-800 transition-all active:scale-95"
             >
-              Save Task
+              Save Task Record
             </button>
           </form>
         </div>
       )}
 
       {deleteTaskId && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-60 backdrop-blur-md">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center border border-gray-100">
-            <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-md">
+          <div className="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl text-center border border-gray-100">
+            <div className="bg-red-50 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 text-red-600">
               <Trash2 size={40} />
             </div>
-            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tighter">
-              Remove Task?
-            </h3>
-            <p className="text-gray-500 mb-8 font-bold leading-relaxed">
-              This action cannot be undone. The task will be deleted
-              permanently.
+            <h2 className="text-3xl font-black text-black mb-2 uppercase tracking-tighter">
+              Delete?
+            </h2>
+            <p className="text-gray-400 mb-10 font-bold leading-relaxed">
+              This action is permanent and cannot be reversed.
             </p>
             <div className="flex gap-4">
               <button
                 onClick={() => setDeleteTaskId(null)}
-                className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-black text-gray-400 uppercase text-xs tracking-widest"
+                className="flex-1 py-4 border-2 border-gray-100 rounded-2xl font-black text-gray-400 uppercase text-[10px] tracking-widest hover:bg-gray-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteTask}
-                className="flex-1 py-3 bg-red-600 text-white rounded-xl font-black uppercase text-xs tracking-widest shadow-lg shadow-red-100"
+                className="flex-1 py-4 bg-red-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-red-100 hover:bg-red-700 transition-colors"
               >
                 Delete
               </button>
