@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
             Legixo
           </span>
           <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">
-            Thinklabs
+            Thinklabs Assignment
           </span>
         </div>
       </div>
