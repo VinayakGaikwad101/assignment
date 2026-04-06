@@ -32,22 +32,25 @@ const CaseDetails: React.FC = () => {
     priority: "Medium" as "Low" | "Medium" | "High",
   });
 
-  const fetchData = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const [caseRes, taskRes] = await Promise.all([
-        caseService.getById(id),
-        taskService.getByCase(id),
-      ]);
-      setCaseData(caseRes.data.data);
-      setTasks(taskRes.data.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const fetchData = useCallback(
+    async (silent = false) => {
+      if (!id) return;
+      try {
+        if (!silent) setLoading(true);
+        const [caseRes, taskRes] = await Promise.all([
+          caseService.getById(id),
+          taskService.getByCase(id),
+        ]);
+        setCaseData(caseRes.data.data);
+        setTasks(taskRes.data.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [id],
+  );
 
   useEffect(() => {
     fetchData();
@@ -81,7 +84,7 @@ const CaseDetails: React.FC = () => {
       });
       setEditingTask(null);
       setShowTaskForm(false);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert("Error saving task");
     }
@@ -90,7 +93,7 @@ const CaseDetails: React.FC = () => {
   const handleToggleStatus = async (taskId: string) => {
     try {
       await taskService.toggleStatus(taskId);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert("Error updating status");
     }
@@ -101,7 +104,7 @@ const CaseDetails: React.FC = () => {
     try {
       await taskService.delete(deleteTaskId);
       setDeleteTaskId(null);
-      fetchData();
+      fetchData(true);
     } catch (err) {
       alert("Error deleting task");
     }
@@ -149,6 +152,11 @@ const CaseDetails: React.FC = () => {
             </p>
           </div>
         </div>
+        {caseData.notes && (
+          <div className="mt-8 p-6 bg-gray-50 rounded-xl text-gray-800 font-bold border-l-8 border-black italic">
+            "{caseData.notes}"
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between items-center mb-8">
@@ -321,7 +329,7 @@ const CaseDetails: React.FC = () => {
       </div>
 
       {deleteTaskId && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-md">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-60 backdrop-blur-md">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center border border-gray-100">
             <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
               <Trash2 size={40} />
