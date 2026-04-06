@@ -1,9 +1,18 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Scale, LayoutDashboard, Briefcase, PlusCircle } from "lucide-react";
+import {
+  Scale,
+  LayoutDashboard,
+  Briefcase,
+  PlusCircle,
+  ShieldCheck,
+  UserCircle,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
+  const { role, toggleRole } = useAuth();
 
   const isActive = (path: string) =>
     location.pathname === path
@@ -40,6 +49,24 @@ const Navbar: React.FC = () => {
         >
           <Briefcase size={16} /> CASES
         </Link>
+
+        <div className="h-6 w-px bg-gray-200 mx-2" />
+
+        <button
+          onClick={toggleRole}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all border-2 ${
+            role === "Admin"
+              ? "border-black bg-black text-white"
+              : "border-gray-200 bg-gray-50 text-gray-500"
+          }`}
+        >
+          {role === "Admin" ? (
+            <ShieldCheck size={14} />
+          ) : (
+            <UserCircle size={14} />
+          )}
+          {role}
+        </button>
 
         <div className="h-6 w-px bg-gray-200 mx-2" />
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { caseService } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import { type Case } from "../types";
 import {
   Search,
@@ -20,6 +21,7 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const CaseList: React.FC = () => {
+  const { isAdmin } = useAuth();
   const [cases, setCases] = useState<Case[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -235,12 +237,14 @@ const CaseList: React.FC = () => {
                       >
                         <Edit3 size={14} /> Edit
                       </Link>
-                      <button
-                        onClick={() => setDeleteId(c._id)}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-600 rounded-xl font-black text-[10px] hover:bg-red-600 hover:text-white transition-all uppercase tracking-tighter"
-                      >
-                        <Trash2 size={14} /> Delete
-                      </button>
+                      {isAdmin && (
+                        <button
+                          onClick={() => setDeleteId(c._id)}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-600 rounded-xl font-black text-[10px] hover:bg-red-600 hover:text-white transition-all uppercase tracking-tighter"
+                        >
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

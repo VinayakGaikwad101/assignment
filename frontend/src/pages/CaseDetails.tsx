@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { caseService, taskService } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import { type Case, type Task } from "../types";
 import {
   ArrowLeft,
@@ -16,6 +17,7 @@ import {
 const CaseDetails: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [caseData, setCaseData] = useState<Case | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -197,12 +199,14 @@ const CaseDetails: React.FC = () => {
               >
                 <Edit3 size={18} />
               </button>
-              <button
-                onClick={() => setDeleteTaskId(task._id)}
-                className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm"
-              >
-                <Trash2 size={18} />
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => setDeleteTaskId(task._id)}
+                  className="p-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
             </div>
           </div>
         ))}
@@ -289,7 +293,7 @@ const CaseDetails: React.FC = () => {
       )}
 
       {deleteTaskId && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-md">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-60 backdrop-blur-md">
           <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center border border-gray-100">
             <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
               <Trash2 size={40} />
