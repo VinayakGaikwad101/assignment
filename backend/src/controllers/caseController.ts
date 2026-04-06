@@ -60,7 +60,33 @@ export const createCase = async (
 
 export const getCases = async (req: Request, res: Response): Promise<void> => {
   try {
-    const cases = await Case.find().sort({ createdAt: -1 });
+    const { search, stage, startDate, endDate } = req.query;
+    let query: any = {};
+
+    if (search) {
+      query.$or = [
+        { caseTitle: { $regex: search, $options: "i" } },
+        { clientName: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (stage) {
+      query.stage = stage;
+    }
+
+    if (startDate || endDate) {
+      query.nextHearingDate = {};
+      if (startDate) {
+        query.nextHearingDate.$gte = new Date(startDate as string);
+      }
+      if (endDate) {
+        const end = new Date(endDate as string);
+        end.setHours(23, 59, 59, 999);
+        query.nextHearingDate.$lte = end;
+      }
+    }
+
+    const cases = await Case.find(query).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -70,7 +96,7 @@ export const getCases = async (req: Request, res: Response): Promise<void> => {
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: "Server error fetching cases",
+      message: "Error fetching filtered cases",
       error: error.message,
     });
   }
