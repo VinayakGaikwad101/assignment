@@ -5,6 +5,7 @@ import { connectDB } from "./config/db";
 import caseRoutes from "./routes/caseRoutes";
 import taskRoutes, { taskRouter } from "./routes/taskRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
+import { errorHandler } from "./middleware/errorMiddleware";
 
 dotenv.config();
 
@@ -24,13 +25,12 @@ app.use("/api/cases/:caseId/tasks", taskRoutes);
 app.use("/api/tasks", taskRouter);
 app.use("/api/dashboard", dashboardRoutes);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(`[Error]: ${err.message}`);
-  res.status(500).json({
-    status: "error",
-    message: err.message || "Internal Server Error",
-  });
+// Add this temporarily in server.ts
+app.get("/api/test-error", (req: Request, res: Response) => {
+  throw new Error("Manual Server Crash Test!");
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
