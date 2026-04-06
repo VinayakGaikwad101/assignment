@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import CaseList from "./pages/CaseList";
+import CaseForm from "./pages/CaseForm";
 import { Scale } from "lucide-react";
+import CaseDetails from "./pages/CaseDetails";
 
 function App() {
   return (
@@ -36,6 +38,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/cases" element={<CaseList />} />
+            <Route path="/cases/new" element={<CaseForm />} />
+            <Route path="/cases/:id/edit" element={<CaseForm />} />
+            <Route path="/cases/:id" element={<CaseDetails />} />
+            <Route path="/cases/:id/edit" element={<CaseForm />} />
           </Routes>
         </main>
       </div>
