@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db";
+import caseRoutes from "./routes/caseRoutes";
 
 dotenv.config();
 
@@ -12,9 +13,11 @@ const app: Application = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api/health", (req: Request, res: Response) => {
   res.status(200).json({ status: "success", message: "API is running" });
 });
+
+app.use("/api/cases", caseRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(`[Error]: ${err.message}`);
