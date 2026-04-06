@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./config/db";
 import caseRoutes from "./routes/caseRoutes";
 import taskRoutes, { taskRouter } from "./routes/taskRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get("/api/health", (req: Request, res: Response) => {
 app.use("/api/cases", caseRoutes);
 app.use("/api/cases/:caseId/tasks", taskRoutes);
 app.use("/api/tasks", taskRouter);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(`[Error]: ${err.message}`);
