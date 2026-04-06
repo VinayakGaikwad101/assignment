@@ -251,28 +251,31 @@ const CaseList: React.FC = () => {
       </div>
 
       {deleteId && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 backdrop-blur-md">
-          <div className="bg-white rounded-3xl p-8 max-sm w-full shadow-2xl text-center border border-gray-100">
-            <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600">
-              <Trash2 size={40} />
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-70 backdrop-blur-md">
+          <div className="bg-white rounded-3xl p-8 w-full max-w-90 shadow-2xl text-center border border-gray-100 animate-in fade-in zoom-in duration-200">
+            <div className="bg-red-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 text-red-600">
+              <Trash2 size={32} strokeWidth={2.5} />
             </div>
-            <h3 className="text-2xl font-black text-black mb-2 uppercase tracking-tighter">
+
+            <h3 className="text-xl font-black text-black mb-2 uppercase tracking-tighter">
               Confirm Delete
             </h3>
-            <p className="text-gray-500 mb-8 font-bold leading-relaxed">
-              Are you sure? This will permanently remove the case and all
-              associated tasks.
+
+            <p className="text-gray-500 mb-8 font-bold text-sm leading-relaxed px-2">
+              This action is permanent. All associated tasks for this case will
+              be lost.
             </p>
-            <div className="flex gap-4">
+
+            <div className="flex gap-3">
               <button
                 onClick={() => setDeleteId(null)}
-                className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-black text-gray-400 hover:bg-gray-50 transition-colors uppercase text-xs tracking-widest"
+                className="flex-1 py-3 border-2 border-gray-100 rounded-xl font-black text-gray-400 hover:bg-gray-50 transition-colors uppercase text-[10px] tracking-widest"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="flex-1 py-3 bg-red-600 text-white rounded-xl font-black hover:bg-red-700 transition-colors uppercase text-xs tracking-widest shadow-lg shadow-red-100"
+                className="flex-1 py-3 bg-red-600 text-white rounded-xl font-black hover:bg-red-700 transition-all uppercase text-[10px] tracking-widest shadow-lg shadow-red-100 active:scale-95"
               >
                 Delete
               </button>
