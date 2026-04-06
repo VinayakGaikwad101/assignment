@@ -18,7 +18,14 @@ export const createTask = async (
       return;
     }
 
-    // 2. Ensure the case exists before adding a task
+    const parsedDate = new Date(dueDate);
+    if (isNaN(parsedDate.getTime())) {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid date format for dueDate" });
+      return;
+    }
+
     const caseExists = await Case.findById(caseId);
     if (!caseExists) {
       res
