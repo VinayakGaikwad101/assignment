@@ -4,7 +4,7 @@
 
 **Repository:** [Github URL](https://github.com/VinayakGaikwad101/assignment)
 
-**Demo Video:** [Insert Video Link Here]
+**Demo Video:** [YouTube Demo URL](https://youtu.be/I4egE_MC9GA)
 
 A task-oriented application built using the MERN stack and TypeScript. This module manages legal case records and tracks hearing preparation tasks, utilizing a hybrid API architecture that incorporates both REST and GraphQL.
 

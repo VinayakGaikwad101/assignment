@@ -67,22 +67,22 @@ const CaseList: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-black text-black uppercase tracking-tight">
+    <div className="p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <h1 className="text-2xl md:text-3xl font-black text-black uppercase tracking-tight">
           Case Records
         </h1>
         <Link
           to="/cases/new"
-          className="bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-black flex items-center gap-2 transition-all shadow-lg active:scale-95"
+          className="w-full sm:w-auto bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-black flex items-center justify-center gap-2 transition-all shadow-lg active:scale-95"
         >
           <Plus size={20} /> NEW CASE
         </Link>
       </div>
 
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-8 space-y-4">
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="relative flex-1 min-w-[300px]">
+      <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-200 mb-8 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center">
+          <div className="relative flex-1">
             <Search
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
@@ -98,7 +98,7 @@ const CaseList: React.FC = () => {
           <div className="flex items-center gap-2 bg-gray-50 px-4 py-3 rounded-xl border border-gray-100">
             <Filter size={18} className="text-gray-400" />
             <select
-              className="bg-transparent outline-none font-bold text-black text-sm uppercase cursor-pointer"
+              className="bg-transparent outline-none font-bold text-black text-sm uppercase cursor-pointer w-full"
               value={stage}
               onChange={(e) => setStage(e.target.value)}
             >
@@ -111,27 +111,31 @@ const CaseList: React.FC = () => {
             </select>
           </div>
         </div>
-        <div className="flex flex-wrap gap-4 items-center border-t border-gray-50 pt-4">
-          <div className="flex items-center gap-3">
-            <Calendar size={16} className="text-gray-400" />
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-              Hearing Range:
-            </span>
-            <input
-              type="date"
-              className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-bold text-black focus:border-black outline-none"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <span className="text-gray-300 font-bold text-xs uppercase">
-              to
-            </span>
-            <input
-              type="date"
-              className="bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-bold text-black focus:border-black outline-none"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-gray-50 pt-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Calendar size={16} className="text-gray-400" />
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest whitespace-nowrap">
+                Hearing Range:
+              </span>
+            </div>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <input
+                type="date"
+                className="flex-1 sm:flex-none bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-bold text-black focus:border-black outline-none"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <span className="text-gray-300 font-bold text-xs uppercase">
+                to
+              </span>
+              <input
+                type="date"
+                className="flex-1 sm:flex-none bg-gray-50 border border-gray-100 rounded-lg px-3 py-1.5 text-xs font-bold text-black focus:border-black outline-none"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
           {(search || stage || startDate || endDate) && (
             <button
@@ -141,7 +145,7 @@ const CaseList: React.FC = () => {
                 setStartDate("");
                 setEndDate("");
               }}
-              className="text-xs text-red-500 font-black hover:text-red-700 uppercase tracking-widest ml-auto transition-colors"
+              className="text-xs text-red-500 font-black hover:text-red-700 uppercase tracking-widest transition-colors self-start md:self-auto"
             >
               Clear All Filters
             </button>
@@ -149,23 +153,23 @@ const CaseList: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-left border-collapse">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="bg-gray-50/50 border-b border-gray-100">
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <th className="px-6 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 Case & Court
               </th>
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <th className="px-6 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 Client
               </th>
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <th className="px-6 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 Stage
               </th>
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              <th className="px-6 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 Hearing Date
               </th>
-              <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
+              <th className="px-6 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">
                 Actions
               </th>
             </tr>
@@ -195,7 +199,7 @@ const CaseList: React.FC = () => {
                   key={c._id}
                   className="hover:bg-gray-50/80 transition-colors group"
                 >
-                  <td className="px-8 py-6">
+                  <td className="px-6 md:px-8 py-6">
                     <Link
                       to={`/cases/${c._id}`}
                       className="font-black text-black hover:text-blue-600 transition-colors block leading-tight mb-1"
@@ -206,43 +210,49 @@ const CaseList: React.FC = () => {
                       {c.caseType} // {c.courtName}
                     </span>
                   </td>
-                  <td className="px-8 py-6 font-bold text-gray-700">
+                  <td className="px-6 md:px-8 py-6 font-bold text-gray-700">
                     {c.clientName}
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-6 md:px-8 py-6">
                     <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider ${STAGE_COLORS[c.stage] || "bg-gray-100 text-gray-600 border-gray-200"}`}
+                      className={`px-3 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider whitespace-nowrap ${STAGE_COLORS[c.stage] || "bg-gray-100 text-gray-600 border-gray-200"}`}
                     >
                       {c.stage}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-sm font-bold text-black">
+                  <td className="px-6 md:px-8 py-6 text-sm font-bold text-black">
                     {new Date(c.nextHearingDate).toLocaleDateString("en-IN", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
                     })}
                   </td>
-                  <td className="px-8 py-6 text-right">
+                  <td className="px-6 md:px-8 py-6 text-right">
                     <div className="flex justify-end items-center gap-2">
                       <Link
                         to={`/cases/${c._id}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-gray-100 text-gray-700 rounded-xl font-black text-[10px] hover:bg-black hover:text-white transition-all uppercase tracking-tighter"
+                        className="p-2 bg-gray-100 text-gray-700 rounded-xl hover:bg-black hover:text-white transition-all sm:px-3 sm:py-2 sm:font-black sm:text-[10px] sm:uppercase sm:tracking-tighter sm:flex sm:items-center sm:gap-1.5"
+                        title="View"
                       >
-                        <Eye size={14} /> View
+                        <Eye className="w-4 h-4" />{" "}
+                        <span className="hidden sm:inline">View</span>
                       </Link>
                       <Link
                         to={`/cases/${c._id}/edit`}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-600 rounded-xl font-black text-[10px] hover:bg-blue-600 hover:text-white transition-all uppercase tracking-tighter"
+                        className="p-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all sm:px-3 sm:py-2 sm:font-black sm:text-[10px] sm:uppercase sm:tracking-tighter sm:flex sm:items-center sm:gap-1.5"
+                        title="Edit"
                       >
-                        <Edit3 size={14} /> Edit
+                        <Edit3 className="w-4 h-4" />{" "}
+                        <span className="hidden sm:inline">Edit</span>
                       </Link>
                       {isAdmin && (
                         <button
                           onClick={() => setDeleteId(c._id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-2 bg-red-50 text-red-600 rounded-xl font-black text-[10px] hover:bg-red-600 hover:text-white transition-all uppercase tracking-tighter"
+                          className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all sm:px-3 sm:py-2 sm:font-black sm:text-[10px] sm:uppercase sm:tracking-tighter sm:flex sm:items-center sm:gap-1.5"
+                          title="Delete"
                         >
-                          <Trash2 size={14} /> Delete
+                          <Trash2 className="w-4 h-4" />{" "}
+                          <span className="hidden sm:inline">Delete</span>
                         </button>
                       )}
                     </div>
@@ -255,10 +265,10 @@ const CaseList: React.FC = () => {
       </div>
 
       {deleteId && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-70 backdrop-blur-md">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-90 shadow-2xl text-center border border-gray-100 animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[70] backdrop-blur-md">
+          <div className="bg-white rounded-3xl p-6 md:p-8 w-full max-w-sm shadow-2xl text-center border border-gray-100 animate-in fade-in zoom-in duration-200">
             <div className="bg-red-50 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 text-red-600">
-              <Trash2 size={32} strokeWidth={2.5} />
+              <Trash2 className="w-8 h-8" strokeWidth={2.5} />
             </div>
 
             <h3 className="text-xl font-black text-black mb-2 uppercase tracking-tighter">
